@@ -69,7 +69,9 @@ class DiscoverPage {
         this.resultsLabel.textContent =
           `Showing results for "${this.currentQuery}"`;
       } else {
-        results = await tmdbApi.getPopularTV(this.currentPage);
+        results = this.currentType === "tv"
+          ? await tmdbApi.getPopularTV(this.currentPage)
+          : await tmdbApi.getPopularMovies(this.currentPage);
         this.resultsLabel.textContent =
           `Showing popular ${this.currentType === "tv" ? "TV shows" : "movies"}`;
       }
