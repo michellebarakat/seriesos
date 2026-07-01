@@ -5,10 +5,10 @@
 class CuratedItem {
   constructor(id, title, category, yourBlurb, yourReview) {
     this.id = id;
-    this.title = title;       // used to search TMDB
+    this.title = title;
     this.category = category;
-    this.yourBlurb = yourBlurb;   // shown on the card
-    this.yourReview = yourReview; // shown in the modal
+    this.yourBlurb = yourBlurb;
+    this.yourReview = yourReview;
   }
 }
 
@@ -29,6 +29,12 @@ const curatedCollection = [
   new CuratedItem(5, "Money Heist", "Crime & Thrillers",
     "A heist too big and too bold to fail.",
     "The early seasons are some of the tensest heist writing on TV."),
+  new CuratedItem(23, "The Night Agent", "Crime & Thrillers",
+    "A low-level FBI agent, a White House conspiracy, and no one left to trust.",
+    "Super bingeable — fast paced from episode one, doesn't let up."),
+  new CuratedItem(24, "The Punisher", "Crime & Thrillers",
+    "A one-man war against everyone who wronged him.",
+    "Darker and more grounded than most Marvel shows, Jon Bernthal carries every scene."),
 
   // K-Dramas
   new CuratedItem(6, "Queen of Tears", "K-Dramas",
@@ -54,6 +60,9 @@ const curatedCollection = [
   new CuratedItem(12, "The Circle", "Reality & Competition",
     "Strangers, screens, and a popularity contest with real stakes.",
     "Surprisingly strategic — more interesting than it sounds on paper."),
+  new CuratedItem(25, "Love Island", "Reality & Competition",
+    "A villa full of strangers trying to couple up and stay in.",
+    "Addictive format, you'll have strong opinions about people you've never met."),
 
   // Teen & Young Adult
   new CuratedItem(13, "Outer Banks", "Teen & Young Adult",
@@ -82,6 +91,18 @@ const curatedCollection = [
   new CuratedItem(20, "Lost", "Must-Watch / OG Classics",
     "A plane crash, an island, and questions that took six seasons to answer.",
     "A defining mystery-box show — frustrating and brilliant in equal measure."),
+  new CuratedItem(26, "Suits", "Must-Watch / OG Classics",
+    "A brilliant college dropout bluffing his way through a top law firm.",
+    "Slick, fast-talking, and impossible to stop watching. Harvey Specter is iconic."),
+  new CuratedItem(27, "Desperate Housewives", "Must-Watch / OG Classics",
+    "Secrets, scandals, and murder — all behind white picket fences.",
+    "Ahead of its time. Equal parts dark comedy and thriller, never boring for a second."),
+  new CuratedItem(28, "How I Met Your Mother", "Must-Watch / OG Classics",
+    "A nine-season love story told completely out of order.",
+    "Genuinely funny for most of its run — the journey is worth it even if the finale isn't."),
+  new CuratedItem(29, "Lucifer", "Must-Watch / OG Classics",
+    "The devil quits Hell, opens a nightclub in LA, and becomes a police consultant.",
+    "Ridiculous premise executed with so much charm you just go with it completely."),
 
   // Superhero / Action
   new CuratedItem(21, "Daredevil", "Superhero / Action",

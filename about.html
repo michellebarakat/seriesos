@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About — SeriesOS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top" id="mainNav">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">
+          <span class="brand-os">Series</span><span class="brand-highlight">OS</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navMenu">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="collection.html">My Collection</a></li>
+            <li class="nav-item"><a class="nav-link" href="discover.html">Discover</a></li>
+            <li class="nav-item"><a class="nav-link active" href="about.html">About</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ABOUT CONTENT -->
+    <section class="py-5">
+      <div class="container about-section text-center">
+
+        <div class="about-avatar">M</div>
+
+        <h1 class="page-title mb-3">About SeriesOS</h1>
+        <p class="text-secondary mb-5">
+          A personal TV tracker and discovery site built for the love of binge-watching.
+        </p>
+
+        <!-- WHAT IS IT -->
+        <div class="about-block text-start mb-5">
+          <h4 class="about-block-title">
+            <i class="bi bi-tv text-danger me-2"></i>What is SeriesOS?
+          </h4>
+          <p class="text-secondary">
+            SeriesOS is a personal watchlist and discovery platform. It has two parts:
+            a hand-curated collection of 29 shows I've personally watched and reviewed,
+            and a Discover page powered by the TMDB API where you can search any
+            show or movie in existence. Click any card to open a detailed view with
+            the backdrop, synopsis, rating, and my personal take.
+          </p>
+        </div>
+
+        <!-- UNIQUE REQUIREMENT -->
+        <div class="about-block text-start mb-5">
+          <h4 class="about-block-title">
+            <i class="bi bi-window-stack text-danger me-2"></i>Custom UI Feature
+          </h4>
+          <p class="text-secondary">
+            The unique front-end requirement for this project was implementing a
+            <strong style="color: var(--text-primary)">modal popup for a detailed item view</strong>.
+            Every card in both the Collection and Discover pages opens a full modal
+            showing the backdrop image, poster, title, rating, TMDB overview, and
+            (on the collection page) my own personal review. The modal closes on
+            backdrop click, the × button, or the Escape key — all handled via
+            Bootstrap 5's modal component wired up through ES6 class methods.
+          </p>
+        </div>
+
+        <!-- TECH STACK -->
+        <div class="about-block text-start mb-5">
+          <h4 class="about-block-title">
+            <i class="bi bi-code-slash text-danger me-2"></i>Tech Stack
+          </h4>
+          <div class="row g-3 mt-2">
+            <div class="col-6 col-md-4">
+              <div class="tech-pill">
+                <i class="bi bi-filetype-html"></i> HTML5
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="tech-pill">
+                <i class="bi bi-filetype-css"></i> CSS3 + Flexbox
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="tech-pill">
+                <i class="bi bi-bootstrap"></i> Bootstrap 5
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="tech-pill">
+                <i class="bi bi-filetype-js"></i> ES6 Classes
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="tech-pill">
+                <i class="bi bi-film"></i> TMDB API
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="tech-pill">
+                <i class="bi bi-github"></i> GitHub Pages
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ABOUT ME -->
+        <div class="about-block text-start mb-5">
+          <h4 class="about-block-title">
+            <i class="bi bi-person text-danger me-2"></i>About Me
+          </h4>
+          <p class="text-secondary">
+            I'm Michelle Barakat, a fourth-year Electrical Engineering student at
+            Lebanese University. I built SeriesOS as my Full Stack Development
+            final project. I genuinely watch a lot of TV — the 29 shows in the
+            collection are real picks from my actual watchlist, with my own blurbs
+            and reviews. No lorem ipsum here.
+          </p>
+        </div>
+
+        <a href="collection.html" class="btn btn-primary btn-lg mt-2">
+          <i class="bi bi-collection-play me-2"></i>Browse the Collection
+        </a>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+      <div class="container text-center">
+        <p class="footer-brand">Series<span class="brand-highlight">OS</span></p>
+        <p class="footer-sub">Built with way too many hours of watching TV.</p>
+        <div class="footer-links">
+          <a href="index.html">Home</a>
+          <a href="collection.html">Collection</a>
+          <a href="discover.html">Discover</a>
+          <a href="about.html">About</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
