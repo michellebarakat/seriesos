@@ -76,6 +76,37 @@ class TMDBApi {
       return null;
     }
   }
+
+  // Get full movie details — includes runtime
+  async getMovieDetails(id) {
+    const url = `${this.baseUrl}/movie/${id}?api_key=${this.apiKey}`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`TMDB movie details failed: ${response.status}`);
+    return await response.json();
+  }
+
+  // Get next season air date if a new season is announced
+  getNextSeasonInfo(details) {
+    if (!details.seasons) return null;
+    const today = new Date();
+    // Find seasons with a future air date (ignore specials — season_number 0)
+    const upcoming = details.seasons.find(s =>
+      s.season_number > 0 &&
+      s.air_date &&
+      new Date(s.air_date) > today
+    );
+    return upcoming ? upcoming : null;
+  }
+
+  // Format runtime in minutes to "Xh Ymin"
+  formatRuntime(minutes) {
+    if (!minutes) return null;
+    const h = Math.floor(minutes / 60);
+    const m = minutes % 60;
+    if (h === 0) return `${m}min`;
+    if (m === 0) return `${h}h`;
+    return `${h}h ${m}min`;
+  }
 }
 
 const tmdbApi = new TMDBApi(TMDB_API_KEY);

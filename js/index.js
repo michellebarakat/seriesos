@@ -14,6 +14,8 @@ const HERO_BACKDROP_TITLES = [
   "Money Heist",
   "Queen of Tears",
   "Outer Banks",
+  "Mentalist",
+  "Desperate housewives",
   "Suits",
 ];
 
@@ -60,7 +62,7 @@ class HomePage {
 
       if (this.backdropUrls.length > 0) {
         this.setHeroBackground(this.backdropUrls[0]);
-        setInterval(() => this.rotateBackdrop(), 10000);
+        setInterval(() => this.rotateBackdrop(), 7000);
       }
     } catch (err) {
       console.error("Failed to load hero backdrops:", err);

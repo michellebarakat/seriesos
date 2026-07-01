@@ -117,8 +117,8 @@ class CollectionPage {
       </div>`;
   }
 
-  openModal(item) {
-    // Populate modal fields
+  async openModal(item) {
+    // Show modal immediately with what we have, then enrich with details
     document.getElementById("modalTitle").textContent = item.title;
     document.getElementById("modalRating").innerHTML =
       `<i class="bi bi-star-fill"></i> ${item.rating} ${item.year ? "· " + item.year : ""}`;
@@ -126,6 +126,11 @@ class CollectionPage {
     document.getElementById("modalOverview").textContent =
       item.overview || "No overview available.";
     document.getElementById("modalReview").textContent = item.yourReview;
+
+    // Extra details placeholder while loading
+    document.getElementById("modalDetails").innerHTML = `
+      <div class="spinner-border spinner-border-sm text-secondary" role="status"></div>
+      <span class="ms-2 text-muted" style="font-size:0.85rem">Loading details...</span>`;
 
     const poster = document.getElementById("modalPoster");
     poster.src = item.poster || "assets/placeholder.jpg";
@@ -140,6 +145,64 @@ class CollectionPage {
     }
 
     this.modal.show();
+
+    // Fetch full details after modal is visible
+    try {
+      const tmdbId = item.tmdb ? item.tmdb.id : null;
+      const isMovie = item.tmdb && item.tmdb.release_date && !item.tmdb.first_air_date;
+
+      if (!tmdbId) {
+        document.getElementById("modalDetails").innerHTML = "";
+        return;
+      }
+
+      if (isMovie) {
+        const details = await tmdbApi.getMovieDetails(tmdbId);
+        const runtime = tmdbApi.formatRuntime(details.runtime);
+        document.getElementById("modalDetails").innerHTML = runtime
+          ? `<span class="detail-chip"><i class="bi bi-clock"></i> ${runtime}</span>`
+          : "";
+      } else {
+        const details = await tmdbApi.getTVDetails(tmdbId);
+        const seasons = details.number_of_seasons || 0;
+        const episodes = details.number_of_episodes || 0;
+        const nextSeason = tmdbApi.getNextSeasonInfo(details);
+
+        // Build episodes per season breakdown
+        const seasonBreakdown = details.seasons
+          ? details.seasons
+              .filter(s => s.season_number > 0)
+              .map(s => `S${s.season_number}: ${s.episode_count} eps`)
+              .join(" · ")
+          : "";
+
+        let html = `
+          <span class="detail-chip">
+            <i class="bi bi-collection"></i> ${seasons} Season${seasons !== 1 ? "s" : ""}
+          </span>
+          <span class="detail-chip">
+            <i class="bi bi-play-circle"></i> ${episodes} Episodes
+          </span>`;
+
+        if (nextSeason) {
+          const airDate = new Date(nextSeason.air_date).toLocaleDateString("en-US", {
+            month: "long", year: "numeric"
+          });
+          html += `
+            <span class="detail-chip detail-chip--new">
+              <i class="bi bi-calendar-check"></i> Season ${nextSeason.season_number} coming ${airDate}
+            </span>`;
+        }
+
+        if (seasonBreakdown) {
+          html += `<p class="season-breakdown mt-2">${seasonBreakdown}</p>`;
+        }
+
+        document.getElementById("modalDetails").innerHTML = html;
+      }
+    } catch (err) {
+      document.getElementById("modalDetails").innerHTML = "";
+    }
   }
 
   showLoading() {

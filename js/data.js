@@ -103,7 +103,10 @@ const curatedCollection = [
   new CuratedItem(29, "Lucifer", "Must-Watch / OG Classics",
     "The devil quits Hell, opens a nightclub in LA, and becomes a police consultant.",
     "Ridiculous premise executed with so much charm you just go with it completely."),
-
+  new CuratedItem(30, "The Mentalist", "Must-Watch / OG Classics",
+    "A fake psychic turned consultant who reads people better than anyone.",
+    "Patrick Jane is one of the most entertaining protagonists on TV — sharp, funny, and always three steps ahead."),
+       
   // Superhero / Action
   new CuratedItem(21, "Daredevil", "Superhero / Action",
     "A blind lawyer, a city that needs saving, and a line he keeps crossing.",

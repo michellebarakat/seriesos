@@ -125,18 +125,21 @@ class DiscoverPage {
       </div>`;
   }
 
-  openModal(item) {
+  async openModal(item) {
     const title = item.name || item.title || "Unknown";
     const rating = item.vote_average ? item.vote_average.toFixed(1) : "N/A";
     const year = (item.first_air_date || item.release_date || "").slice(0, 4);
-    const type = item.first_air_date ? "TV Show" : "Movie";
+    const isMovie = !item.first_air_date;
 
     document.getElementById("discModalTitle").textContent = title;
     document.getElementById("discModalRating").innerHTML =
       `<i class="bi bi-star-fill"></i> ${rating} · ${year}`;
-    document.getElementById("discModalType").textContent = type;
+    document.getElementById("discModalType").textContent = isMovie ? "Movie" : "TV Show";
     document.getElementById("discModalOverview").textContent =
       item.overview || "No overview available.";
+    document.getElementById("discModalDetails").innerHTML = `
+      <div class="spinner-border spinner-border-sm text-secondary" role="status"></div>
+      <span class="ms-2 text-muted" style="font-size:0.85rem">Loading details...</span>`;
 
     const poster = document.getElementById("discModalPoster");
     poster.src = item.poster_path
@@ -146,15 +149,62 @@ class DiscoverPage {
 
     const backdrop = document.getElementById("discModalBackdrop");
     if (item.backdrop_path) {
-      backdrop.src = tmdbApi.getImageUrl(
-        item.backdrop_path, tmdbApi.backdropBaseUrl
-      );
+      backdrop.src = tmdbApi.getImageUrl(item.backdrop_path, tmdbApi.backdropBaseUrl);
       backdrop.style.display = "block";
     } else {
       backdrop.style.display = "none";
     }
 
     this.modal.show();
+
+    // Fetch full details after modal opens
+    try {
+      if (isMovie) {
+        const details = await tmdbApi.getMovieDetails(item.id);
+        const runtime = tmdbApi.formatRuntime(details.runtime);
+        document.getElementById("discModalDetails").innerHTML = runtime
+          ? `<span class="detail-chip"><i class="bi bi-clock"></i> ${runtime}</span>`
+          : "";
+      } else {
+        const details = await tmdbApi.getTVDetails(item.id);
+        const seasons = details.number_of_seasons || 0;
+        const episodes = details.number_of_episodes || 0;
+        const nextSeason = tmdbApi.getNextSeasonInfo(details);
+
+        const seasonBreakdown = details.seasons
+          ? details.seasons
+              .filter(s => s.season_number > 0)
+              .map(s => `S${s.season_number}: ${s.episode_count} eps`)
+              .join(" · ")
+          : "";
+
+        let html = `
+          <span class="detail-chip">
+            <i class="bi bi-collection"></i> ${seasons} Season${seasons !== 1 ? "s" : ""}
+          </span>
+          <span class="detail-chip">
+            <i class="bi bi-play-circle"></i> ${episodes} Episodes
+          </span>`;
+
+        if (nextSeason) {
+          const airDate = new Date(nextSeason.air_date).toLocaleDateString("en-US", {
+            month: "long", year: "numeric"
+          });
+          html += `
+            <span class="detail-chip detail-chip--new">
+              <i class="bi bi-calendar-check"></i> Season ${nextSeason.season_number} coming ${airDate}
+            </span>`;
+        }
+
+        if (seasonBreakdown) {
+          html += `<p class="season-breakdown mt-2">${seasonBreakdown}</p>`;
+        }
+
+        document.getElementById("discModalDetails").innerHTML = html;
+      }
+    } catch (err) {
+      document.getElementById("discModalDetails").innerHTML = "";
+    }
   }
 
   updatePagination() {

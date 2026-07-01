@@ -692,6 +692,42 @@ img {
 }
 
 /* =============================================
+   MODAL DETAIL CHIPS
+   ============================================= */
+.modal-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.detail-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.detail-chip--new {
+  border-color: #2ecc71;
+  color: #2ecc71;
+  background-color: rgba(46, 204, 113, 0.1);
+}
+
+.season-breakdown {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin: 0;
+  width: 100%;
+}
+/* =============================================
    RESPONSIVE
    ============================================= */
 @media (max-width: 768px) {
