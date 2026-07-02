@@ -1,5 +1,5 @@
 // SeriesOS — Discover page
-// TMDB-powered search with TV/Movie toggle and pagination
+// TMDB-powered search with pagination
 
 import { tmdbApi } from "./api.js";
 
@@ -7,14 +7,12 @@ class DiscoverPage {
   constructor() {
     this.grid = document.getElementById("discoverGrid");
     this.searchInput = document.getElementById("searchInput");
-    this.typeFilter = document.getElementById("typeFilter");
     this.resultsLabel = document.getElementById("resultsLabel");
     this.prevBtn = document.getElementById("prevBtn");
     this.nextBtn = document.getElementById("nextBtn");
     this.pageInfo = document.getElementById("pageInfo");
     this.modal = new bootstrap.Modal(document.getElementById("discoverModal"));
 
-    this.currentType = "tv";
     this.currentPage = 1;
     this.currentQuery = "";
     this.searchTimer = null;
@@ -23,7 +21,6 @@ class DiscoverPage {
   }
 
   bindEvents() {
-    // Live search with debounce (waits 500ms after typing stops)
     this.searchInput.addEventListener("input", () => {
       clearTimeout(this.searchTimer);
       this.searchTimer = setTimeout(() => {
@@ -33,18 +30,6 @@ class DiscoverPage {
       }, 500);
     });
 
-    // TV / Movie toggle
-    this.typeFilter.addEventListener("click", (e) => {
-      if (!e.target.classList.contains("filter-btn")) return;
-      document.querySelectorAll("#typeFilter .filter-btn")
-        .forEach(b => b.classList.remove("active"));
-      e.target.classList.add("active");
-      this.currentType = e.target.dataset.type;
-      this.currentPage = 1;
-      this.load();
-    });
-
-    // Pagination
     this.prevBtn.addEventListener("click", () => {
       if (this.currentPage > 1) {
         this.currentPage--;
@@ -63,17 +48,11 @@ class DiscoverPage {
     try {
       let results;
       if (this.currentQuery) {
-        results = this.currentType === "tv"
-          ? await tmdbApi.searchTV(this.currentQuery)
-          : await tmdbApi.searchMovie(this.currentQuery);
-        this.resultsLabel.textContent =
-          `Showing results for "${this.currentQuery}"`;
+        results = await tmdbApi.searchTV(this.currentQuery);
+        this.resultsLabel.textContent = `Showing results for "${this.currentQuery}"`;
       } else {
-        results = this.currentType === "tv"
-          ? await tmdbApi.getPopularTV(this.currentPage)
-          : await tmdbApi.getPopularMovies(this.currentPage);
-        this.resultsLabel.textContent =
-          `Showing popular ${this.currentType === "tv" ? "TV shows" : "movies"}`;
+        results = await tmdbApi.getPopularTV(this.currentPage);
+        this.resultsLabel.textContent = "Showing popular TV shows";
       }
 
       this.updatePagination();
@@ -91,7 +70,6 @@ class DiscoverPage {
 
   renderGrid(results) {
     this.grid.innerHTML = results.map(item => this.buildCard(item)).join("");
-
     this.grid.querySelectorAll(".show-card").forEach((card, i) => {
       card.addEventListener("click", () => this.openModal(results[i]));
     });
@@ -102,9 +80,7 @@ class DiscoverPage {
     const poster = item.poster_path
       ? tmdbApi.getImageUrl(item.poster_path)
       : "assets/placeholder.jpg";
-    const rating = item.vote_average
-      ? item.vote_average.toFixed(1)
-      : "N/A";
+    const rating = item.vote_average ? item.vote_average.toFixed(1) : "N/A";
     const year = (item.first_air_date || item.release_date || "").slice(0, 4);
 
     return `
@@ -159,7 +135,6 @@ class DiscoverPage {
 
     this.modal.show();
 
-    // Fetch full details after modal opens
     try {
       if (isMovie) {
         const details = await tmdbApi.getMovieDetails(item.id);
