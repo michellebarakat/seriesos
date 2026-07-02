@@ -503,6 +503,9 @@ img {
   font-weight: 600;
 }
 
+.show-rating .text-muted {
+  color: #a0a0b0 !important;
+}
 /* =============================================
    DISCOVER PAGE
    ============================================= */
