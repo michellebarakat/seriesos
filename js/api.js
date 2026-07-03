@@ -59,6 +59,17 @@ class TMDBApi {
     return data.results;
   }
 
+  // Get popular movies — used when Movies tab is selected with no search query
+  async getPopularMovies(page = 1) {
+    const url = `${this.baseUrl}/movie/popular?api_key=${this.apiKey}&page=${page}`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`TMDB popular movies fetch failed: ${response.status}`);
+    }
+    const data = await response.json();
+    return data.results;
+  }
+
   // Helper: find the best match for a curated title, trying TV first then Movie
   async findBestMatch(title) {
     try {

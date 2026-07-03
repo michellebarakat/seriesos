@@ -85,7 +85,7 @@ const curatedCollection = [
   new CuratedItem(18, "Brooklyn Nine-Nine", "Must-Watch / OG Classics",
     "A precinct full of chaos, run with surprising heart.",
     "Consistently funny with a cast that has incredible chemistry. Light and short episodes for when you want something quick."),
-  new CuratedItem(19, "The Wlking Dead", "Must-Watch / OG Classics",
+  new CuratedItem(19, "The Walking Dead", "Must-Watch / OG Classics",
     "In the wake of a zombie apocalypse, survivors hold on to the hope of humanity by banding together to wage a fight for their own survival.",
     "It is a great horror show with amazing characters, but it gets boring in the middle because it is too long, they lost the plot with all the spin-offs."),
   new CuratedItem(20, "Lost", "Must-Watch / OG Classics",
