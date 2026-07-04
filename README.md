@@ -16,6 +16,7 @@ SeriesOS is a personal TV show tracking and discovery site. It has two main sect
 
 The home page features a rotating hero background that cycles through show backdrops every 10 seconds, a featured picks section, and a stats bar.
 
+- - **What Should I Watch?** — A 7-question personality quiz that matches you to a show from the curated collection based on your mood, available time, preferred genre, character type, and more.
 ---
 
 ## API Used
@@ -63,6 +64,9 @@ The modal closes on the × button, backdrop click, or Escape key. Implemented us
 3.	*"i want the modal that opens when u click a card to show a lot more information than just the poster and the description. specifically i want to know how many seasons the show has, and also a breakdown of how many episodes are in each season like S1: 10 eps, S2: 8 eps, S3: 10 eps so i can see the full picture. For movies instead of seasons show the total runtime formatted nicely like 1h 52min not just the number of minutes. all of this extra info should load after the modal opens so it doesnt slow down the page."*
 
 → Led to the extra TMDB details fetch on modal open using `getTVDetails()` and `getMovieDetails()`, the episodes-per-season breakdown from the seasons array, the conditional next season display with formatted air date, and the `formatRuntime()` helper method. The loading spinner inside the modal while details fetch was also added from this prompt.
+
+4. 4. *"i want to add a quiz to the site, like a personality quiz where u answer questions about your mood, how much time u have, what kind of character u like, what setting u want, and at the end it matches u to one of the 30 shows in my collection. i want 7 questions and i want it to feel fun and interactive not boring. each question should have 4 options and based on what u pick it should calculate which show fits u best using some kind of scoring system. and the result should show the poster from tmdb, the rating, my personal blurb and review for that show."*  
+   → Led to the full quiz page with 7 questions, a scoring system that adds weighted points to show IDs based on each answer, a progress bar, animated transitions between questions, and a result screen that fetches the matched show's poster and rating from TMDB live.`
 
 ### What the AI Got Wrong
 
