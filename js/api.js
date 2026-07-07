@@ -118,6 +118,18 @@ class TMDBApi {
     if (m === 0) return `${h}h`;
     return `${h}h ${m}min`;
   }
+
+  // Get trailer YouTube key for a TV show or movie
+  async getTrailer(id, type = "tv") {
+    const url = `${this.baseUrl}/${type}/${id}/videos?api_key=${this.apiKey}`;
+    const response = await fetch(url);
+    if (!response.ok) return null;
+    const data = await response.json();
+    const trailer = data.results.find(
+      v => v.type === "Trailer" && v.site === "YouTube"
+    );
+    return trailer ? trailer.key : null;
+  }
 }
 
 const tmdbApi = new TMDBApi(TMDB_API_KEY);

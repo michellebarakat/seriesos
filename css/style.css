@@ -1039,3 +1039,30 @@ img {
     width: 100%;
   }
 }
+
+/* =============================================
+   TRAILER BUTTON
+   ============================================= */
+.btn-trailer {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #ff0000;
+  color: white;
+  padding: 0.6rem 1.25rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: var(--transition);
+  text-decoration: none;
+}
+
+.btn-trailer:hover {
+  background-color: #cc0000;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.btn-trailer .bi-youtube {
+  font-size: 1.1rem;
+}

@@ -142,6 +142,14 @@ class DiscoverPage {
         document.getElementById("discModalDetails").innerHTML = runtime
           ? `<span class="detail-chip"><i class="bi bi-clock"></i> ${runtime}</span>`
           : "";
+
+        const trailerKey = await tmdbApi.getTrailer(item.id, "movie");
+        if (trailerKey) {
+          document.getElementById("discModalTrailer").innerHTML = `
+            <a href="https://www.youtube.com/watch?v=${trailerKey}" target="_blank" class="btn-trailer">
+              <i class="bi bi-youtube"></i> Watch Trailer
+            </a>`;
+        }
       } else {
         const details = await tmdbApi.getTVDetails(item.id);
         const seasons = details.number_of_seasons || 0;
@@ -178,6 +186,13 @@ class DiscoverPage {
         }
 
         document.getElementById("discModalDetails").innerHTML = html;
+        const trailerKey = await tmdbApi.getTrailer(item.id, "tv");
+        if (trailerKey) {
+          document.getElementById("discModalTrailer").innerHTML = `
+            <a href="https://www.youtube.com/watch?v=${trailerKey}" target="_blank" class="btn-trailer">
+              <i class="bi bi-youtube"></i> Watch Trailer
+            </a>`;
+        }
       }
     } catch (err) {
       document.getElementById("discModalDetails").innerHTML = "";
