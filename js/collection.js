@@ -8,23 +8,20 @@ class CollectionPage {
   constructor() {
     this.grid = document.getElementById("collectionGrid");
     this.filterBar = document.getElementById("filterBar");
-    this.allItems = [];         // will hold items merged with TMDB data
+    this.allItems = [];
     this.activeCategory = "All";
 
-    // Bootstrap modal instance
     this.modal = new bootstrap.Modal(document.getElementById("showModal"));
 
     this.bindFilters();
     this.checkURLCategory();
   }
 
-  // Check if a category was passed via URL (from home page category pills)
   checkURLCategory() {
     const params = new URLSearchParams(window.location.search);
     const cat = params.get("category");
     if (cat) {
       this.activeCategory = cat;
-      // Highlight the right filter button
       document.querySelectorAll(".filter-btn").forEach(btn => {
         btn.classList.toggle("active", btn.dataset.category === cat);
       });
@@ -44,7 +41,6 @@ class CollectionPage {
   async init() {
     this.showLoading();
     try {
-      // Fetch TMDB data for all 22 items in parallel
       const merged = await Promise.all(
         curatedCollection.map(async (item) => {
           const match = await tmdbApi.findBestMatch(item.title);
@@ -84,7 +80,6 @@ class CollectionPage {
 
     this.grid.innerHTML = filtered.map(item => this.buildCard(item)).join("");
 
-    // Attach click listeners for modal
     this.grid.querySelectorAll(".show-card").forEach(card => {
       card.addEventListener("click", () => {
         const id = parseInt(card.dataset.id);
@@ -118,7 +113,6 @@ class CollectionPage {
   }
 
   async openModal(item) {
-    // Show modal immediately with what we have, then enrich with details
     document.getElementById("modalTitle").textContent = item.title;
     document.getElementById("modalRating").innerHTML =
       `<i class="bi bi-star-fill"></i> ${item.rating} ${item.year ? "· " + item.year : ""}`;
@@ -127,10 +121,10 @@ class CollectionPage {
       item.overview || "No overview available.";
     document.getElementById("modalReview").textContent = item.yourReview;
 
-    // Extra details placeholder while loading
     document.getElementById("modalDetails").innerHTML = `
       <div class="spinner-border spinner-border-sm text-secondary" role="status"></div>
       <span class="ms-2 text-muted" style="font-size:0.85rem">Loading details...</span>`;
+    document.getElementById("modalTrailer").innerHTML = "";
 
     const poster = document.getElementById("modalPoster");
     poster.src = item.poster || "assets/placeholder.jpg";
@@ -146,7 +140,6 @@ class CollectionPage {
 
     this.modal.show();
 
-    // Fetch full details after modal is visible
     try {
       const tmdbId = item.tmdb ? item.tmdb.id : null;
       const isMovie = item.tmdb && item.tmdb.release_date && !item.tmdb.first_air_date;
@@ -162,13 +155,20 @@ class CollectionPage {
         document.getElementById("modalDetails").innerHTML = runtime
           ? `<span class="detail-chip"><i class="bi bi-clock"></i> ${runtime}</span>`
           : "";
+
+        const trailerKey = await tmdbApi.getTrailer(tmdbId, "movie");
+        if (trailerKey) {
+          document.getElementById("modalTrailer").innerHTML = `
+            <a href="https://www.youtube.com/watch?v=${trailerKey}" target="_blank" class="btn-trailer">
+              <i class="bi bi-youtube"></i> Watch Trailer
+            </a>`;
+        }
       } else {
         const details = await tmdbApi.getTVDetails(tmdbId);
         const seasons = details.number_of_seasons || 0;
         const episodes = details.number_of_episodes || 0;
         const nextSeason = tmdbApi.getNextSeasonInfo(details);
 
-        // Build episodes per season breakdown
         const seasonBreakdown = details.seasons
           ? details.seasons
               .filter(s => s.season_number > 0)
@@ -199,6 +199,14 @@ class CollectionPage {
         }
 
         document.getElementById("modalDetails").innerHTML = html;
+
+        const trailerKey = await tmdbApi.getTrailer(tmdbId, "tv");
+        if (trailerKey) {
+          document.getElementById("modalTrailer").innerHTML = `
+            <a href="https://www.youtube.com/watch?v=${trailerKey}" target="_blank" class="btn-trailer">
+              <i class="bi bi-youtube"></i> Watch Trailer
+            </a>`;
+        }
       }
     } catch (err) {
       document.getElementById("modalDetails").innerHTML = "";

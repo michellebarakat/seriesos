@@ -38,7 +38,21 @@
         <p class="text-secondary mt-2">
           30 hand-picked shows across 6 categories — with my own take on each one.
         </p>
-        <div class="filter-bar mt-4" id="filterBar">
+
+        <!-- SEARCH BAR -->
+        <div class="search-bar-wrapper mt-4" style="max-width:400px; margin-left:0;">
+          <i class="bi bi-search search-icon"></i>
+          <input
+            type="text"
+            id="collectionSearch"
+            class="search-input"
+            placeholder="Search your collection..."
+            autocomplete="off"
+          />
+        </div>
+
+        <!-- FILTER BUTTONS -->
+        <div class="filter-bar mt-3" id="filterBar">
           <button class="filter-btn active" data-category="All">All</button>
           <button class="filter-btn" data-category="Crime & Thrillers">Crime & Thrillers</button>
           <button class="filter-btn" data-category="K-Dramas">K-Dramas</button>
@@ -86,6 +100,7 @@
             <p class="modal-section-label">My Take</p>
             <p class="modal-text" id="modalReview"></p>
             <div id="modalTrailer" class="mt-3"></div>
+            <div id="modalSimilar" class="mt-3"></div>
           </div>
         </div>
       </div>
@@ -100,6 +115,7 @@
           <a href="index.html">Home</a>
           <a href="collection.html">Collection</a>
           <a href="discover.html">Discover</a>
+          <a href="quiz.html">Quiz</a>
           <a href="about.html">About</a>
         </div>
       </div>

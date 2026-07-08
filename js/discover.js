@@ -31,15 +31,11 @@ class DiscoverPage {
     });
 
     this.prevBtn.addEventListener("click", () => {
-      if (this.currentPage > 1) {
-        this.currentPage--;
-        this.load();
-      }
+      if (this.currentPage > 1) { this.currentPage--; this.load(); }
     });
 
     this.nextBtn.addEventListener("click", () => {
-      this.currentPage++;
-      this.load();
+      this.currentPage++; this.load();
     });
   }
 
@@ -57,11 +53,7 @@ class DiscoverPage {
 
       this.updatePagination();
 
-      if (!results || results.length === 0) {
-        this.showEmpty();
-        return;
-      }
-
+      if (!results || results.length === 0) { this.showEmpty(); return; }
       this.renderGrid(results);
     } catch (err) {
       this.showError();
@@ -77,21 +69,14 @@ class DiscoverPage {
 
   buildCard(item) {
     const title = item.name || item.title || "Unknown";
-    const poster = item.poster_path
-      ? tmdbApi.getImageUrl(item.poster_path)
-      : "assets/placeholder.jpg";
+    const poster = item.poster_path ? tmdbApi.getImageUrl(item.poster_path) : "assets/placeholder.jpg";
     const rating = item.vote_average ? item.vote_average.toFixed(1) : "N/A";
     const year = (item.first_air_date || item.release_date || "").slice(0, 4);
 
     return `
       <div class="col-6 col-md-4 col-lg-3">
         <div class="show-card">
-          <img
-            src="${poster}"
-            alt="${title}"
-            class="show-poster"
-            onerror="this.src='assets/placeholder.jpg'"
-          />
+          <img src="${poster}" alt="${title}" class="show-poster" onerror="this.src='assets/placeholder.jpg'" />
           <div class="show-card-body">
             <h5 class="show-title">${title}</h5>
             <p class="show-rating">
@@ -110,19 +95,17 @@ class DiscoverPage {
     const isMovie = !item.first_air_date;
 
     document.getElementById("discModalTitle").textContent = title;
-    document.getElementById("discModalRating").innerHTML =
-      `<i class="bi bi-star-fill"></i> ${rating} · ${year}`;
+    document.getElementById("discModalRating").innerHTML = `<i class="bi bi-star-fill"></i> ${rating} · ${year}`;
     document.getElementById("discModalType").textContent = isMovie ? "Movie" : "TV Show";
-    document.getElementById("discModalOverview").textContent =
-      item.overview || "No overview available.";
+    document.getElementById("discModalOverview").textContent = item.overview || "No overview available.";
     document.getElementById("discModalDetails").innerHTML = `
       <div class="spinner-border spinner-border-sm text-secondary" role="status"></div>
       <span class="ms-2 text-muted" style="font-size:0.85rem">Loading details...</span>`;
+    document.getElementById("discModalTrailer").innerHTML = "";
+    document.getElementById("discModalSimilar").innerHTML = "";
 
     const poster = document.getElementById("discModalPoster");
-    poster.src = item.poster_path
-      ? tmdbApi.getImageUrl(item.poster_path)
-      : "assets/placeholder.jpg";
+    poster.src = item.poster_path ? tmdbApi.getImageUrl(item.poster_path) : "assets/placeholder.jpg";
     poster.alt = title;
 
     const backdrop = document.getElementById("discModalBackdrop");
@@ -186,12 +169,35 @@ class DiscoverPage {
         }
 
         document.getElementById("discModalDetails").innerHTML = html;
+
         const trailerKey = await tmdbApi.getTrailer(item.id, "tv");
         if (trailerKey) {
           document.getElementById("discModalTrailer").innerHTML = `
             <a href="https://www.youtube.com/watch?v=${trailerKey}" target="_blank" class="btn-trailer">
               <i class="bi bi-youtube"></i> Watch Trailer
             </a>`;
+        }
+
+        // Fetch similar shows
+        const similar = await tmdbApi.getSimilarTV(item.id);
+        if (similar && similar.length > 0) {
+          const similarHTML = similar.map(s => `
+            <div class="similar-card">
+              <img
+                src="${s.poster_path ? tmdbApi.getImageUrl(s.poster_path) : "assets/placeholder.jpg"}"
+                alt="${s.name || s.title}"
+                class="similar-poster"
+                onerror="this.src='assets/placeholder.jpg'"
+              />
+              <p class="similar-title">${s.name || s.title}</p>
+              <p class="similar-rating">
+                <i class="bi bi-star-fill"></i> ${s.vote_average ? s.vote_average.toFixed(1) : "N/A"}
+              </p>
+            </div>
+          `).join("");
+          document.getElementById("discModalSimilar").innerHTML = `
+            <p class="modal-section-label">You Might Also Like</p>
+            <div class="similar-grid">${similarHTML}</div>`;
         }
       }
     } catch (err) {
