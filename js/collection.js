@@ -1,5 +1,5 @@
 // SeriesOS — Collection page
-// Renders curated collection, handles filtering, and opens detail modal
+// Renders curated collection, handles filtering, search, and opens detail modal
 
 import { tmdbApi } from "./api.js";
 import { curatedCollection } from "./data.js";
@@ -8,6 +8,7 @@ class CollectionPage {
   constructor() {
     this.grid = document.getElementById("collectionGrid");
     this.filterBar = document.getElementById("filterBar");
+    this.searchInput = document.getElementById("collectionSearch");
     this.allItems = [];
     this.activeCategory = "All";
 
@@ -36,6 +37,11 @@ class CollectionPage {
       this.activeCategory = e.target.dataset.category;
       this.renderGrid();
     });
+
+    // Live search within collection
+    this.searchInput.addEventListener("input", () => {
+      this.renderGrid();
+    });
   }
 
   async init() {
@@ -50,9 +56,7 @@ class CollectionPage {
             poster: match ? tmdbApi.getImageUrl(match.data.poster_path) : null,
             backdrop: match ? tmdbApi.getImageUrl(match.data.backdrop_path, tmdbApi.backdropBaseUrl) : null,
             rating: match ? (match.data.vote_average || 0).toFixed(1) : "N/A",
-            year: match
-              ? (match.data.first_air_date || match.data.release_date || "").slice(0, 4)
-              : "",
+            year: match ? (match.data.first_air_date || match.data.release_date || "").slice(0, 4) : "",
             overview: match ? match.data.overview : "",
           };
         })
@@ -65,15 +69,24 @@ class CollectionPage {
   }
 
   renderGrid() {
-    const filtered = this.activeCategory === "All"
+    const query = this.searchInput.value.trim().toLowerCase();
+
+    let filtered = this.activeCategory === "All"
       ? this.allItems
       : this.allItems.filter(item => item.category === this.activeCategory);
+
+    if (query) {
+      filtered = filtered.filter(item =>
+        item.title.toLowerCase().includes(query) ||
+        item.yourBlurb.toLowerCase().includes(query)
+      );
+    }
 
     if (filtered.length === 0) {
       this.grid.innerHTML = `
         <div class="col-12 text-center empty-state">
-          <i class="bi bi-collection fs-1"></i>
-          <p class="mt-3">No shows in this category yet.</p>
+          <i class="bi bi-search fs-1"></i>
+          <p class="mt-3">No shows found. Try a different search or category.</p>
         </div>`;
       return;
     }
@@ -117,14 +130,13 @@ class CollectionPage {
     document.getElementById("modalRating").innerHTML =
       `<i class="bi bi-star-fill"></i> ${item.rating} ${item.year ? "· " + item.year : ""}`;
     document.getElementById("modalCategory").textContent = item.category;
-    document.getElementById("modalOverview").textContent =
-      item.overview || "No overview available.";
+    document.getElementById("modalOverview").textContent = item.overview || "No overview available.";
     document.getElementById("modalReview").textContent = item.yourReview;
-
     document.getElementById("modalDetails").innerHTML = `
       <div class="spinner-border spinner-border-sm text-secondary" role="status"></div>
       <span class="ms-2 text-muted" style="font-size:0.85rem">Loading details...</span>`;
     document.getElementById("modalTrailer").innerHTML = "";
+    document.getElementById("modalSimilar").innerHTML = "";
 
     const poster = document.getElementById("modalPoster");
     poster.src = item.poster || "assets/placeholder.jpg";
@@ -206,6 +218,28 @@ class CollectionPage {
             <a href="https://www.youtube.com/watch?v=${trailerKey}" target="_blank" class="btn-trailer">
               <i class="bi bi-youtube"></i> Watch Trailer
             </a>`;
+        }
+
+        // Fetch similar shows
+        const similar = await tmdbApi.getSimilarTV(tmdbId);
+        if (similar && similar.length > 0) {
+          const similarHTML = similar.map(s => `
+            <div class="similar-card">
+              <img
+                src="${s.poster_path ? tmdbApi.getImageUrl(s.poster_path) : "assets/placeholder.jpg"}"
+                alt="${s.name || s.title}"
+                class="similar-poster"
+                onerror="this.src='assets/placeholder.jpg'"
+              />
+              <p class="similar-title">${s.name || s.title}</p>
+              <p class="similar-rating">
+                <i class="bi bi-star-fill"></i> ${s.vote_average ? s.vote_average.toFixed(1) : "N/A"}
+              </p>
+            </div>
+          `).join("");
+          document.getElementById("modalSimilar").innerHTML = `
+            <p class="modal-section-label">You Might Also Like</p>
+            <div class="similar-grid">${similarHTML}</div>`;
         }
       }
     } catch (err) {
